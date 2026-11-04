@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Morning Circle · Unit 2 | C.R.A. Jimena Muñiz (Corullón)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --font-heading: 'Fredoka', cursive, system-ui, sans-serif;
+      --font-body: 'Nunito', system-ui, sans-serif;
+      --color-primary: #f59e0b;
+      --color-primary-dark: #d97706;
+      --color-teal: #0d9488;
+      --color-orange: #ea580c;
+      --color-sky: #0284c7;
+      --color-rose: #e11d48;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --touch-min: 48px;
+    }
+
+    body.dark {
+      --bg-page: #090d16;
+      --bg-card: #131b2e;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: #1e293b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      transition: background-color 0.2s, color 0.2s;
+    }
+
+    h1, h2, h3, h4, h5, .font-heading { font-family: var(--font-heading); }
+
+    /* Layout */
+    header, footer {
+      background: var(--bg-card);
+      border-color: var(--border-color);
+      padding: 12px 20px;
+    }
+    header { border-bottom: 1px solid var(--border-color); }
+    footer { border-top: 1px solid var(--border-color); margin-top: auto; }
+    main { flex: 1; max-width: 1200px; width: 100%; margin: 0 auto; padding: 20px 16px; }
+
+    /* Whiteboard Buttons */
+    button {
+      font-family: inherit;
+      cursor: pointer;
+      border: 1px solid transparent;
+      outline: none;
+      transition: transform 0.1s, background-color 0.15s, border-color 0.15s;
+    }
+    button:active { transform: scale(0.97); }
+
+    .btn-touch { min-height: var(--touch-min); padding: 8px 16px; border-radius: 14px; font-weight: 700; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-primary { background: var(--color-primary); color: #fff; }
+    .btn-primary:hover { background: var(--color-primary-dark); }
+    .btn-secondary { background: #f1f5f9; color: #334155; border: 1px solid var(--border-color); }
+    body.dark .btn-secondary { background: #1e293b; color: #cbd5e1; }
+
+    /* Step tabs */
+    .step-nav { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-top: 8px; }
+    .step-tab { flex: 1; min-width: 110px; padding: 8px 10px; border-radius: 12px; background: var(--bg-card); border: 1px solid var(--border-color); text-align: left; }
+    .step-tab.active { background: var(--color-primary); color: #fff; border-color: var(--color-primary-dark); box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3); }
+    .step-tab.active .step-sub { color: #fef3c7; }
+    .step-title { font-weight: 800; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+    .step-sub { font-size: 10px; color: var(--text-muted); display: block; margin-top: 2px; }
+
+    /* Common Card Styles */
+    .app-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .banner-hero { border-radius: 24px; padding: 24px; color: #fff; margin-bottom: 20px; box-shadow: 0 4px 14px rgba(0,0,0,0.08); }
+    .model-quote { font-family: var(--font-heading); font-size: 28px; font-weight: 800; text-align: center; margin: 12px 0; }
+
+    /* Grid layout */
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .grid-6 { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+    @media (max-width: 768px) {
+      .grid-4, .grid-6 { grid-template-columns: repeat(2, 1fr); }
+      .model-quote { font-size: 20px; }
+    }
+
+    /* Animations */
+    @keyframes bounceSuccess {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    @keyframes shakeTryAgain {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+    .animate-success { animation: bounceSuccess 0.4s ease-in-out; }
+    .animate-shake { animation: shakeTryAgain 0.4s ease-in-out; }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="width:44px; height:44px; border-radius:12px; background:linear-gradient(135deg, #f59e0b, #ea580c); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:20px;">MC</div>
+        <div>
+          <h1 style="font-size:18px; font-weight:800; display:flex; align-items:center; gap:8px;">
+            Morning Circle · Unit 2
+            <span style="font-size:11px; background:#fef3c7; color:#92400e; padding:2px 6px; border-radius:6px;">LOMLOE · DUA</span>
+          </h1>
+          <p style="font-size:12px; color:var(--text-muted);">C.R.A. Jimena Muñiz · Corullón (León)</p>
+        </div>
+      </div>
+
+      <!-- Desdoble Switcher -->
+      <div style="display:flex; background:#f1f5f9; padding:4px; border-radius:14px; border:1px solid var(--border-color);" id="desdobleSelector">
+        <button class="btn-touch" id="btnDesdoble1" style="background:#f59e0b; color:#fff;" onclick="selectDesdoble('desdoble1')">
+          🌱 Desdoble 1 (2º-3º-4º)
+        </button>
+        <button class="btn-touch" id="btnDesdoble2" style="background:transparent; color:#64748b;" onclick="selectDesdoble('desdoble2')">
+          🚀 Desdoble 2 (5º-6º)
+        </button>
+      </div>
+
+      <!-- Quick Actions: Timer & Sounds -->
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div style="background:#0f172a; color:#fbbf24; padding:6px 14px; border-radius:12px; font-family:monospace; font-weight:800; font-size:18px; display:flex; align-items:center; gap:8px;">
+          <span id="timerDisplay">05:00</span>
+          <button onclick="toggleTimer()" style="background:none; border:none; color:#10b981; font-size:16px;" id="timerBtn">▶</button>
+          <button onclick="resetTimer()" style="background:none; border:none; color:#94a3b8; font-size:16px;">↺</button>
+        </div>
+        <button class="btn-touch btn-secondary" onclick="toggleSound()" id="soundBtn" title="Sonido">🔊</button>
+        <button class="btn-touch btn-secondary" onclick="toggleDarkMode()" id="themeBtn" title="Tema">🌙</button>
+        <button class="btn-touch" style="background:#fee2e2; color:#b91c1c;" onclick="confirmResetUnit()" title="Reiniciar Unidad">↺ Unidad</button>
+      </div>
+    </div>
+
+    <!-- 7 Steps Navigation Bar -->
+    <div class="step-nav" id="stepNavBar">
+      <!-- Generated via JS -->
+    </div>
+  </header>
+
+  <!-- Main View Stage -->
+  <main id="appStage">
+    <!-- Step contents rendered dynamically -->
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div style="max-width:1200px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+      <div style="font-size:13px; color:var(--text-muted);" id="teacherGuide">
+        <strong style="color:var(--text-main);">Indicación docente:</strong> Guía la asamblea oralmente; el alumnado participa saliendo a la pizarra.
+      </div>
+      <div style="display:flex; gap:10px;">
+        <button class="btn-touch btn-secondary" id="btnPrev" onclick="navigateStep(-1)">← Back</button>
+        <button class="btn-touch btn-primary" id="btnNext" onclick="navigateStep(1)">Next →</button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Script with complete curriculum & self-contained logic -->
+  <script>
+    // Audio synthesizer via Web Audio API
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+    let soundEnabled = true;
+
+    function playSoundTone(freq, type, duration) {
+      if (!soundEnabled) return;
+      try {
+        if (!audioCtx) audioCtx = new AudioCtx();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function playCorrectSound() {
+      [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {
+        setTimeout(() => playSoundTone(f, 'sine', 0.2), i * 70);
+      });
+    }
+    function playTryAgainSound() { playSoundTone(260, 'triangle', 0.25); }
+    function playTickSound() { playSoundTone(600, 'triangle', 0.04); }
+
+    function speakEnglish(text) {
+      if (!('speechSynthesis' in window)) return;
+      try {
+        window.speechSynthesis.cancel();
+        const clean = text.replace(/[\u{1F300}-\u{1FAFF}]/gu, '').trim();
+        const ut = new SpeechSynthesisUtterance(clean);
+        ut.lang = 'en-GB';
+        ut.rate = 0.9;
+        const voices = window.speechSynthesis.getVoices();
+        const gb = voices.find(v => v.lang.startsWith('en-GB') || v.name.includes('UK') || v.lang.startsWith('en'));
+        if (gb) ut.voice = gb;
+        window.speechSynthesis.speak(ut);
+      } catch (e) {}
+    }
+
+    // App State
+    let activeDesdoble = 'desdoble1';
+    let currentStep = 1;
+    let activeGrade = 'grade2';
+
+    // Weather document format: weather/corullon
+    let weatherCorullon = {
+      date: new Date().toISOString().split('T')[0],
+      hours: { "7": 4, "8": 5, "9": 7, "10": 9, "11": 11, "12": 13, "13": 14, "14": 15 },
+      source: "AEMET",
+      fetched: new Date().toISOString()
+    };
+
+    let desdobleStates = {
+      desdoble1: {
+        stars: 5, maxStars: 20,
+        teams: [{ name: "Red Foxes 🦊", points: 3 }, { name: "Blue Jays 🐦", points: 4 }, { name: "Green Frogs 🐸", points: 4 }],
+        scoreHistory: [],
+        mapTiles: { grade2: [true, true, false, false, false, false], grade3: [true, false, false, false, false, false], grade4: [true, false, false, false, false, false] },
+        emotionsTally: { happy: 6, excited: 4, calm: 3 }
+      },
+      desdoble2: {
+        stars: 7, maxStars: 25,
+        teams: [{ name: "Grey Wolves 🐺", points: 5 }, { name: "Golden Eagles 🦅", points: 6 }, { name: "Iberian Lynx 🐾", points: 5 }],
+        scoreHistory: [],
+        mapTiles: { grade5: [true, true, false, false, false, false], grade6: [true, false, false, false, false, false] },
+        emotionsTally: { happy: 5, calm: 4, tired: 1 }
+      }
+    };
+
+    // Load saved preferences
+    try {
+      const savedDes = localStorage.getItem('morning_circle_desdoble');
+      if (savedDes) activeDesdoble = savedDes;
+    } catch(e) {}
+
+    // Steps definition
+    const STEPS = [
+      { num: 1, title: "Hello!", icon: "👋", sub: "Diálogo interactivo" },
+      { num: 2, title: "How are you?", icon: "😊", sub: "Emociones & contador" },
+      { num: 3, title: "Date", icon: "📅", sub: "Fecha y misterio" },
+      { num: 4, title: "Weather", icon: "⛅", sub: "Corullón & AEMET" },
+      { num: 5, title: "Time", icon: "⏰", sub: "La hora en palabras" },
+      { num: 6, title: "Unit 2 Challenge", icon: "🏆", sub: "Minijuegos & DUA" },
+      { num: 7, title: "Exit Ticket", icon: "🎟️", sub: "Pase de salida & racha" }
+    ];
+
+    // Timer
+    let timerSecs = 300;
+    let timerRunning = false;
+    let timerInterval = null;
+
+    function updateTimerDisplay() {
+      const m = Math.floor(timerSecs / 60).toString().padStart(2, '0');
+      const s = (timerSecs % 60).toString().padStart(2, '0');
+      document.getElementById('timerDisplay').innerText = `${m}:${s}`;
+    }
+    function toggleTimer() {
+      timerRunning = !timerRunning;
+      document.getElementById('timerBtn').innerText = timerRunning ? '⏸' : '▶';
+      if (timerRunning) {
+        timerInterval = setInterval(() => {
+          if (timerSecs > 0) { timerSecs--; updateTimerDisplay(); }
+          else { clearInterval(timerInterval); timerRunning = false; playCorrectSound(); }
+        }, 1000);
+      } else { clearInterval(timerInterval); }
+    }
+    function resetTimer() {
+      clearInterval(timerInterval);
+      timerRunning = false;
+      timerSecs = 300;
+      document.getElementById('timerBtn').innerText = '▶';
+      updateTimerDisplay();
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      document.getElementById('soundBtn').innerText = soundEnabled ? '🔊' : '🔇';
+    }
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark');
+      document.getElementById('themeBtn').innerText = document.body.classList.contains('dark') ? '☀️' : '🌙';
+    }
+
+    function selectDesdoble(des) {
+      activeDesdoble = des;
+      activeGrade = des === 'desdoble1' ? 'grade2' : 'grade5';
+      try { localStorage.setItem('morning_circle_desdoble', des); } catch(e) {}
+      document.getElementById('btnDesdoble1').style.background = des === 'desdoble1' ? '#f59e0b' : 'transparent';
+      document.getElementById('btnDesdoble1').style.color = des === 'desdoble1' ? '#fff' : '#64748b';
+      document.getElementById('btnDesdoble2').style.background = des === 'desdoble2' ? '#0d9488' : 'transparent';
+      document.getElementById('btnDesdoble2').style.color = des === 'desdoble2' ? '#fff' : '#64748b';
+      renderStep();
+    }
+
+    function confirmResetUnit() {
+      if (confirm("¿Estás seguro/a de reiniciar las estrellas, casillas y puntos de este desdoble?")) {
+        const cur = desdobleStates[activeDesdoble];
+        cur.stars = 0;
+        cur.teams.forEach(t => t.points = 0);
+        Object.keys(cur.mapTiles).forEach(k => cur.mapTiles[k] = [false, false, false, false, false, false]);
+        playCorrectSound();
+        renderStep();
+      }
+    }
+
+    function navigateStep(delta) {
+      const next = currentStep + delta;
+      if (next >= 1 && next <= 7) {
+        currentStep = next;
+        playTickSound();
+        renderNavBar();
+        renderStep();
+      }
+    }
+
+    function renderNavBar() {
+      const bar = document.getElementById('stepNavBar');
+      bar.innerHTML = STEPS.map(s => `
+        <button class="step-tab ${s.num === currentStep ? 'active' : ''}" onclick="currentStep=${s.num}; playTickSound(); renderNavBar(); renderStep();">
+          <div class="step-title"><span>${s.icon}</span> <span>${s.num}. ${s.title}</span></div>
+          <span class="step-sub">${s.sub}</span>
+        </button>
+      `).join('');
+    }
+
+    // Render Steps
+    function renderStep() {
+      const stage = document.getElementById('appStage');
+      const state = desdobleStates[activeDesdoble];
+
+      if (currentStep === 1) {
+        // Step 1: Hello Dialogue
+        const grades = activeDesdoble === 'desdoble1' ? ['grade2', 'grade3', 'grade4'] : ['grade5', 'grade6'];
+        stage.innerHTML = `
+          <div class="banner-hero" style="background:linear-gradient(135deg, #f59e0b, #ea580c);">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <h2>Hello! Greeting Dialogue</h2>
+                <p style="font-size:12px; opacity:0.9;">Turnos de saludo interactivos entre Maestra y Alumnado</p>
+              </div>
+              <button class="btn-touch" style="background:#fff; color:#b45309;" onclick="speakEnglish('Good morning class! Welcome to the morning circle!')">🔊 Listen</button>
+            </div>
+            <div class="model-quote">"Good morning, Class! Welcome to our English Circle!"</div>
+          </div>
+          <div class="app-card">
+            <div style="display:flex; gap:10px; margin-bottom:16px;">
+              ${grades.map(g => `<button class="btn-touch ${activeGrade === g ? 'btn-primary' : 'btn-secondary'}" onclick="activeGrade='${g}'; renderStep();">${g.toUpperCase()}</button>`).join('')}
+            </div>
+            <div style="background:#f8fafc; border:2px solid #e2e8f0; border-radius:18px; padding:20px; margin-bottom:12px;">
+              <strong style="color:#0284c7;">👩‍🏫 Teacher:</strong> "Welcome, explorers! Are you ready for Unit 2?"
+            </div>
+            <div style="background:#ecfdf5; border:2px solid #a7f3d0; border-radius:18px; padding:20px;">
+              <strong style="color:#059669;">👧🧒 Students:</strong> "Yes, we are! Let's explore together!"
+            </div>
+          </div>
+        `;
+      } else if (currentStep === 2) {
+        // Step 2: How Are You (8 Emotions)
+        const emos = [
+          { id: 'happy', l: 'Happy', e: '😊' }, { id: 'excited', l: 'Excited', e: '🤩' },
+          { id: 'calm', l: 'Calm', e: '😌' }, { id: 'tired', l: 'Tired', e: '🥱' },
+          { id: 'sad', l: 'Sad', e: '😢' }, { id: 'angry', l: 'Angry', e: '😠' },
+          { id: 'hungry', l: 'Hungry', e: '🍎' }, { id: 'proud', l: 'Proud', e: '🌟' }
+        ];
+        stage.innerHTML = `
+          <div class="banner-hero" style="background:linear-gradient(135deg, #10b981, #0d9488);">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <h2>How are you today?</h2>
+                <p style="font-size:12px; opacity:0.9;">Modelo obligatorio: Afirmativo + Negativo</p>
+              </div>
+              <button class="btn-touch" style="background:#fff; color:#065f46;" onclick="speakEnglish('I am happy. I am not tired.')">🔊 Listen Model</button>
+            </div>
+            <div class="model-quote">"I'm happy. I'm not tired."</div>
+          </div>
+          <div class="app-card">
+            <h3 style="margin-bottom:16px;">Toca tu emoción para sumar tu voto a la asamblea:</h3>
+            <div class="grid-4">
+              ${emos.map(e => `
+                <button class="btn-touch" style="background:var(--bg-page); border:2px solid var(--border-color); border-radius:16px; flex-direction:column; padding:16px; min-height:110px;" onclick="desdobleStates['${activeDesdoble}'].emotionsTally['${e.id}'] = (desdobleStates['${activeDesdoble}'].emotionsTally['${e.id}'] || 0) + 1; playCorrectSound(); renderStep();">
+                  <span style="font-size:36px;">${e.e}</span>
+                  <strong style="font-size:16px; margin-top:4px;">${e.l}</strong>
+                  <span style="background:#f59e0b; color:#fff; padding:2px 8px; border-radius:10px; font-size:12px; margin-top:4px;">${state.emotionsTally[e.id] || 0}</span>
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      } else if (currentStep === 3) {
+        // Step 3: Date Mystery
+        const now = new Date();
+        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        stage.innerHTML = `
+          <div class="banner-hero" style="background:linear-gradient(135deg, #3b82f6, #1d4ed8);">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <h2>Date & Season Routine</h2>
+                <p style="font-size:12px; opacity:0.9;">Di la fecha oralmente antes de revelar las tarjetas</p>
+              </div>
+              <button class="btn-touch" style="background:#fff; color:#1e40af;" onclick="speakEnglish('Today is ${days[now.getDay()]}, the ${now.getDate()}th of ${months[now.getMonth()]}, ${now.getFullYear()}. It is autumn.')">🔊 Listen Date</button>
+            </div>
+            <div class="model-quote">"Today is ${days[now.getDay()]}, the ${now.getDate()}th of ${months[now.getMonth()]}. It is autumn."</div>
+          </div>
+          <div class="app-card">
+            <div class="grid-4">
+              <div class="app-card" style="text-align:center; cursor:pointer;" onclick="this.innerHTML='<span style=\\'font-size:32px; font-weight:800; color:#2563eb;\\'>${days[now.getDay()]}</span><br><small>Day of the week</small>'; playCorrectSound();">
+                <span style="font-size:40px;">❓</span>
+                <p style="font-weight:700; margin-top:6px;">Day of the Week</p>
+                <small style="color:#2563eb;">👉 Toca para desvelar</small>
+              </div>
+              <div class="app-card" style="text-align:center; cursor:pointer;" onclick="this.innerHTML='<span style=\\'font-size:32px; font-weight:800; color:#d97706;\\'>the ${now.getDate()}th</span><br><small>Ordinal number</small>'; playCorrectSound();">
+                <span style="font-size:40px;">❓</span>
+                <p style="font-weight:700; margin-top:6px;">Ordinal Number</p>
+                <small style="color:#d97706;">👉 Toca para desvelar</small>
+              </div>
+              <div class="app-card" style="text-align:center; cursor:pointer;" onclick="this.innerHTML='<span style=\\'font-size:32px; font-weight:800; color:#059669;\\'>${months[now.getMonth()]}</span><br><small>Month</small>'; playCorrectSound();">
+                <span style="font-size:40px;">❓</span>
+                <p style="font-weight:700; margin-top:6px;">Month</p>
+                <small style="color:#059669;">👉 Toca para desvelar</small>
+              </div>
+              <div class="app-card" style="text-align:center; cursor:pointer;" onclick="this.innerHTML='<span style=\\'font-size:32px; font-weight:800; color:#7c3aed;\\'>Autumn 🍂</span><br><small>Season</small>'; playCorrectSound();">
+                <span style="font-size:40px;">❓</span>
+                <p style="font-weight:700; margin-top:6px;">Season</p>
+                <small style="color:#7c3aed;">👉 Toca para desvelar</small>
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (currentStep === 4) {
+        // Step 4: Weather Corullón
+        const temp = weatherCorullon.hours["9"] || 10;
+        const model = activeDesdoble === 'desdoble1' ? "It's cold." : `It's ${temp} degrees. It's cool.`;
+        stage.innerHTML = `
+          <div class="banner-hero" style="background:linear-gradient(135deg, #0284c7, #0369a1);">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <h2>Weather in Corullón (El Bierzo)</h2>
+                <p style="font-size:12px; opacity:0.9;">Documento weather/corullon · Fuente: AEMET</p>
+              </div>
+              <button class="btn-touch" style="background:#fff; color:#0369a1;" onclick="speakEnglish('${model}')">🔊 Listen Weather</button>
+            </div>
+            <div class="model-quote">"${model}"</div>
+          </div>
+          <div class="app-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid var(--border-color);">
+              <div>
+                <h3>Temperatura de Corullón:</h3>
+                <small style="color:var(--text-muted);">Estación AEMET / Bierzo</small>
+              </div>
+              <div style="display:flex; align-items:center; gap:12px;">
+                <button class="btn-touch btn-secondary" onclick="weatherCorullon.hours['9']--; playTickSound(); renderStep();">-1°C</button>
+                <span style="font-size:32px; font-weight:900; font-family:var(--font-heading); color:#0284c7;">${temp}°C</span>
+                <button class="btn-touch btn-secondary" onclick="weatherCorullon.hours['9']++; playTickSound(); renderStep();">+1°C</button>
+                <a href="https://www.aemet.es/es/eltiempo/prediccion/municipios/corullon-id24059" target="_blank" style="margin-left:8px; font-size:12px; color:#0284c7; text-decoration:none; font-weight:700;">🔗 Web AEMET</a>
+              </div>
+            </div>
+            <div class="grid-4">
+              <button class="btn-touch btn-secondary" style="height:80px; flex-direction:column;" onclick="playTickSound()"><span>☀️ Sunny</span></button>
+              <button class="btn-touch btn-secondary" style="height:80px; flex-direction:column;" onclick="playTickSound()"><span>☁️ Cloudy</span></button>
+              <button class="btn-touch btn-secondary" style="height:80px; flex-direction:column;" onclick="playTickSound()"><span>🌧️ Raining</span></button>
+              <button class="btn-touch btn-secondary" style="height:80px; flex-direction:column;" onclick="playTickSound()"><span>💨 Windy</span></button>
+            </div>
+          </div>
+        `;
+      } else if (currentStep === 5) {
+        // Step 5: Time in Words
+        stage.innerHTML = `
+          <div class="banner-hero" style="background:linear-gradient(135deg, #059669, #047857);">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <h2>What time is it? · Time in Words</h2>
+                <p style="font-size:12px; opacity:0.9;">Intervalos de 5 minutos en inglés británico</p>
+              </div>
+              <button class="btn-touch" style="background:#fff; color:#065f46;" onclick="speakEnglish('It is nine o clock.')">🔊 Listen Time</button>
+            </div>
+            <div class="model-quote" id="timeWordQuote">"It's nine o'clock."</div>
+          </div>
+          <div class="app-card" style="text-align:center;">
+            <div style="display:flex; justify-content:center; gap:10px; margin-bottom:20px; flex-wrap:wrap;">
+              <button class="btn-touch btn-secondary" onclick="document.getElementById('timeWordQuote').innerText='\\\"It\\\'s nine o\\\'clock.\\\"'; speakEnglish('It is nine o clock');">09:00 (o'clock)</button>
+              <button class="btn-touch btn-secondary" onclick="document.getElementById('timeWordQuote').innerText='\\\"It\\\'s quarter past nine.\\\"'; speakEnglish('It is quarter past nine');">09:15 (quarter past)</button>
+              <button class="btn-touch btn-secondary" onclick="document.getElementById('timeWordQuote').innerText='\\\"It\\\'s half past nine.\\\"'; speakEnglish('It is half past nine');">09:30 (half past)</button>
+              <button class="btn-touch btn-secondary" onclick="document.getElementById('timeWordQuote').innerText='\\\"It\\\'s quarter to ten.\\\"'; speakEnglish('It is quarter to ten');">09:45 (quarter to)</button>
+            </div>
+            <p style="color:var(--text-muted); font-size:13px;">Toca las frases para cambiar la hora y escuchar su pronunciación.</p>
+          </div>
+        `;
+      } else if (currentStep === 6) {
+        // Step 6: Unit 2 Challenge (Gamified Hub)
+        stage.innerHTML = `
+          <div style="display:grid; grid-template-columns: 1fr 2fr; gap:16px; margin-bottom:16px;">
+            <!-- Cooperative Star Jar -->
+            <div class="app-card" style="background:linear-gradient(135deg, #f59e0b, #d97706); color:#fff;">
+              <h3 style="display:flex; justify-content:space-between;">
+                <span>🍯 Star Jar</span>
+                <span>${state.stars}/${state.maxStars} ⭐</span>
+              </h3>
+              <p style="font-size:11px; margin-top:4px; opacity:0.9;">¡Meta común para toda la clase!</p>
+              <div style="background:rgba(0,0,0,0.2); height:16px; border-radius:10px; margin:12px 0; overflow:hidden;">
+                <div style="width:${(state.stars/state.maxStars)*100}%; background:#fef08a; height:100%;"></div>
+              </div>
+              <button class="btn-touch" style="background:#fff; color:#b45309; width:100%;" onclick="desdobleStates['${activeDesdoble}'].stars = Math.min(desdobleStates['${activeDesdoble}'].maxStars, desdobleStates['${activeDesdoble}'].stars + 1); playCorrectSound(); renderStep();">+1 Star ⭐</button>
+            </div>
+
+            <!-- Rotating Teams -->
+            <div class="app-card">
+              <h3 style="margin-bottom:8px;">👥 Rotating Teams Scoreboard:</h3>
+              <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px;">
+                ${state.teams.map((t, idx) => `
+                  <div style="border:2px solid var(--border-color); border-radius:14px; padding:10px; text-align:center;">
+                    <strong style="font-size:12px; display:block;">${t.name}</strong>
+                    <span style="font-size:24px; font-weight:900; font-family:var(--font-heading);">${t.points}</span>
+                    <div style="display:flex; gap:4px; margin-top:6px;">
+                      <button class="btn-touch btn-secondary" style="flex:1; padding:4px;" onclick="desdobleStates['${activeDesdoble}'].teams[${idx}].points = Math.max(0, desdobleStates['${activeDesdoble}'].teams[${idx}].points - 1); playTickSound(); renderStep();">-1</button>
+                      <button class="btn-touch btn-primary" style="flex:1; padding:4px;" onclick="desdobleStates['${activeDesdoble}'].teams[${idx}].points++; playCorrectSound(); renderStep();">+1</button>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+
+          <!-- Challenge Minigame Box -->
+          <div class="app-card">
+            <h3 style="margin-bottom:12px;">🏆 Explorers' Club · Unit 2 Challenge</h3>
+            <div style="background:#fef3c7; border:2px solid #fde68a; border-radius:16px; padding:20px; text-align:center;">
+              <span style="font-size:64px; display:block;">🎨</span>
+              <h4 style="font-size:24px; font-weight:800; font-family:var(--font-heading); color:#92400e;">Whose brush is this?</h4>
+              <p style="font-size:16px; margin:8px 0; color:#b45309;">"It's Jack's!" · "It's on the desk."</p>
+              <div style="display:flex; justify-content:center; gap:10px; margin-top:16px;">
+                <button class="btn-touch btn-primary" onclick="desdobleStates['${activeDesdoble}'].stars = Math.min(desdobleStates['${activeDesdoble}'].maxStars, desdobleStates['${activeDesdoble}'].stars + 2); playCorrectSound(); renderStep();">✅ Correct (+2 ⭐ DUA)</button>
+                <button class="btn-touch btn-secondary" onclick="playTryAgainSound()">Try Again</button>
+                <button class="btn-touch btn-secondary" onclick="speakEnglish('Whose brush is this? It is Jack s!')">🔊 Listen</button>
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (currentStep === 7) {
+        // Step 7: Exit Ticket & Closure
+        stage.innerHTML = `
+          <div class="banner-hero" style="background:linear-gradient(135deg, #7c3aed, #4c1d95);">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <h2>Exit Ticket & Daily Reward</h2>
+                <p style="font-size:12px; opacity:0.9;">Cada alumno dice su frase para salir · Cierre de sesión</p>
+              </div>
+              <button class="btn-touch" style="background:#fff; color:#5b21b6;" onclick="playCorrectSound()">🎉 Validar</button>
+            </div>
+            <div class="model-quote">"The brush is on the desk. Goodbye teacher!"</div>
+          </div>
+          <div class="app-card" style="text-align:center;">
+            <h3>🌟 Insignias ganadas hoy en el C.R.A.:</h3>
+            <div style="display:flex; justify-content:center; gap:16px; margin:20px 0; flex-wrap:wrap;">
+              <div style="border:2px solid #f59e0b; border-radius:16px; padding:12px; width:140px;">
+                <span style="font-size:32px;">🎙️</span>
+                <strong style="display:block; font-size:12px; margin-top:4px;">Super Speaker</strong>
+              </div>
+              <div style="border:2px solid #10b981; border-radius:16px; padding:12px; width:140px;">
+                <span style="font-size:32px;">🤝</span>
+                <strong style="display:block; font-size:12px; margin-top:4px;">Team Player</strong>
+              </div>
+              <div style="border:2px solid #3b82f6; border-radius:16px; padding:12px; width:140px;">
+                <span style="font-size:32px;">🔍</span>
+                <strong style="display:block; font-size:12px; margin-top:4px;">Grammar Detective</strong>
+              </div>
+            </div>
+            <button class="btn-touch btn-primary" style="padding:12px 28px; font-size:16px;" onclick="playCorrectSound(); alert('¡Sesión completada y recompensa concedida a la clase!');">🎁 Conceder Recompensa del Día</button>
+          </div>
+        `;
+      }
+    }
+
+    // Keyboard navigation
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') navigateStep(1);
+      if (e.key === 'ArrowLeft') navigateStep(-1);
+      if (e.key === ' ') { e.preventDefault(); toggleTimer(); }
+    });
+
+    // Initial render
+    renderNavBar();
+    renderStep();
+  </script>
+</body>
+</html>

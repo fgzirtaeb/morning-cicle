@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-heading: 'Fredoka', cursive, system-ui, sans-serif;
+    --font-body: 'Nunito', system-ui, sans-serif;
+    
+    /* Grade color tokens */
+    --color-grade2: #f59e0b; /* Amber */
+    --color-grade3: #0d9488; /* Teal */
+    --color-grade4: #ea580c; /* Orange */
+    --color-grade5: #0284c7; /* Sky */
+    --color-grade6: #e11d48; /* Rose / Deep Amber Crimson */
+  }
+
+  body {
+    font-family: var(--font-body);
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  h1, h2, h3, h4, h5, h6, .font-heading {
+    font-family: var(--font-heading);
+  }
+}
+
+/* Animations for whiteboard feedback */
+@keyframes bounce-short {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-8px) scale(1.03); }
+}
+
+@keyframes shake-gentle {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+@keyframes pop-in {
+  0% { transform: scale(0.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.animate-bounce-short {
+  animation: bounce-short 0.4s ease-in-out;
+}
+
+.animate-shake-gentle {
+  animation: shake-gentle 0.4s ease-in-out;
+}
+
+.animate-pop-in {
+  animation: pop-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-bounce-short,
+  .animate-shake-gentle,
+  .animate-pop-in {
+    animation: none !important;
+    transition: none !important;
+  }
+}

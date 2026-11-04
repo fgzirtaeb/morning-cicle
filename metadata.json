@@ -1,0 +1,6 @@
+{
+  "name": "Morning Circle · Unit 2",
+  "description": "Pizarra digital interactiva y gamificada para la asamblea de inglés en CRA Jimena Muñiz (Corullón) según LOMLOE y DUA.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
